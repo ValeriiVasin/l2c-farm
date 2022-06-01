@@ -6,7 +6,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "jest --passWithNoTests"
+    "check-types": "tsc --noEmit",
+    "lint": "echo 'TBD'",
+    "test": "jest --passWithNoTests",
+    "test:integration:ci": "echo 'TBD'"
   },
   "dependencies": {
     "@awsui/components-react": "^3.0.510",
