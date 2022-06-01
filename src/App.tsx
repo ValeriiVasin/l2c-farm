@@ -1,14 +1,15 @@
 import AppLayout from '@awsui/components-react/app-layout';
+import Button from '@awsui/components-react/button';
 import ColumnLayout from '@awsui/components-react/column-layout';
 import Container from '@awsui/components-react/container';
 import FormField from '@awsui/components-react/form-field';
+import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
 import Table from '@awsui/components-react/table';
 import { useState } from 'react';
-import './App.css';
 
-function App() {
+export function App() {
   return <AppLayout
     content={<Content />}
     navigationHide
@@ -25,7 +26,14 @@ function Content() {
     { title: 'Адена', hourly: '500k', daily: '12kk' },
   ];
 
-  return <Container header={'Калькулятор Фарма'}>
+  return <Container
+    header={<Header variant='h3'
+      actions={
+        <SpaceBetween size="s" direction='horizontal'>
+          <Button variant='normal'>Очистить</Button>
+        </SpaceBetween>
+      }>Калькулятор Фарма</Header>}
+    >
     <ColumnLayout columns={2} variant="text-grid">
     <SpaceBetween direction='vertical' size='s'>
     <FormField
@@ -62,5 +70,3 @@ function Content() {
     </ColumnLayout>
   </Container>
 }
-
-export default App
