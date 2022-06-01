@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@awsui/components-react": "^3.0.510",
+    "@awsui/global-styles": "^1.0.14",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
