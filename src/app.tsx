@@ -7,20 +7,41 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { formatNumber } from './helpers/format-number';
+import { parseNumber } from './helpers/parse-number';
+import { parseTime } from './helpers/parse-time';
 
 export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
 }
 
 function Content() {
-  const [exp, setExp] = useState('250kk');
-  const [time, setTime] = useState('1ч 20мин');
-  const [adena, setAdena] = useState('15кк');
-  const cardItems = [
-    { header: 'За 1 час', exp: '5kkk', adena: '500k' },
-    { header: 'За 24 часа', exp: '120kkk', adena: '12kk' },
-  ];
+  const [exp, setExp] = useState('');
+  const [adena, setAdena] = useState('');
+  const [time, setTime] = useState('');
+
+  const expInputRef = useRef<HTMLInputElement>(null);
+
+  const parsedTime = parseTime(time);
+  const isTimeCorrect = Number.isFinite(parsedTime) && parsedTime > 0;
+  const perMinute = (value: number) => (isTimeCorrect ? value / parsedTime : 0);
+  const perHour = (value: number) => perMinute(value) * 60;
+  const perDay = (value: number) => perHour(value) * 24;
+
+  const parsedExp = parseNumber(exp);
+  const isExpCorrect = Number.isFinite(parsedExp);
+
+  const parsedAdena = parseNumber(adena);
+  const isAdenaCorrect = Number.isFinite(parsedAdena);
+  const showResults = isTimeCorrect && (isAdenaCorrect || isExpCorrect);
+
+  const onClearButtonClick = () => {
+    setTime('');
+    setAdena('');
+    setExp('');
+    expInputRef.current?.focus();
+  };
 
   return (
     <Container
@@ -29,7 +50,9 @@ function Content() {
           variant="h3"
           actions={
             <SpaceBetween size="s" direction="horizontal">
-              <Button variant="normal">Очистить</Button>
+              <Button variant="normal" onClick={onClearButtonClick}>
+                Очистить
+              </Button>
             </SpaceBetween>
           }
         >
@@ -39,30 +62,43 @@ function Content() {
     >
       <ColumnLayout columns={2} variant="text-grid">
         <SpaceBetween direction="vertical" size="s">
-          <FormField label="Затраченное время" constraintText="Например, 1ч 20м">
-            <Input value={time} onChange={(event) => setTime(event.detail.value)} />
-          </FormField>
-
           <FormField label="Опыт" constraintText="Например, 250kk">
-            <Input value={exp} onChange={(event) => setExp(event.detail.value)} />
+            <Input ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
           </FormField>
 
           <FormField label="Адена" constraintText="Например, 15kk">
             <Input value={adena} onChange={(event) => setAdena(event.detail.value)} />
           </FormField>
+
+          <FormField label="Затраченное время" constraintText="Например, 1ч 20м или 1h 20m">
+            <Input value={time} onChange={(event) => setTime(event.detail.value)} />
+          </FormField>
         </SpaceBetween>
-        <Cards
-          trackBy={'header'}
-          items={cardItems}
-          cardDefinition={{
-            header: (item) => item.header,
-            sections: [
-              { header: 'Опыт', content: (item) => item.exp },
-              { header: 'Адена', content: (item) => item.adena },
-            ],
-          }}
-          cardsPerRow={[{ cards: 2 }]}
-        ></Cards>
+        {showResults && (
+          <Cards
+            trackBy={'header'}
+            items={[
+              {
+                header: 'За 1 час',
+                adena: isAdenaCorrect ? formatNumber(perHour(parsedAdena)) : '-',
+                exp: isExpCorrect ? formatNumber(perHour(parsedExp)) : '-',
+              },
+              {
+                header: 'За 24 часа',
+                adena: isAdenaCorrect ? formatNumber(perDay(parsedAdena)) : '-',
+                exp: isExpCorrect ? formatNumber(perDay(parsedExp)) : '-',
+              },
+            ]}
+            cardDefinition={{
+              header: (item) => item.header,
+              sections: [
+                { header: 'Опыт', content: (item) => item.exp },
+                { header: 'Адена', content: (item) => item.adena },
+              ],
+            }}
+            cardsPerRow={[{ cards: 2 }]}
+          ></Cards>
+        )}
       </ColumnLayout>
     </Container>
   );
