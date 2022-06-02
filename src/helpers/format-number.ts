@@ -28,6 +28,10 @@ function format(value: number, digits: number) {
   const ceil = Math.floor(value);
   let frac = Math.round((value - ceil) * Math.pow(10, digits));
 
+  if (frac === 0) {
+    return ceil;
+  }
+
   while (frac % 10 === 0) {
     frac /= 10;
   }

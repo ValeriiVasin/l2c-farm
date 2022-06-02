@@ -20,4 +20,8 @@ describe('format exp', () => {
     expect(formatNumber(22_300_000)).toBe('22.3kk');
     expect(formatNumber(999_999_000)).toBe('1kkk');
   });
+
+  test('edge cases', () => {
+    expect(formatNumber(270_000_000)).toBe('270kk');
+  });
 });
