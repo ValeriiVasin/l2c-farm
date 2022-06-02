@@ -41,10 +41,7 @@ function toMinutes(chunk?: string): number {
 }
 
 function replaceIdentifiers(str: string): string {
-  return str
-    .replace(/д/g, 'd')
-    .replace(/ч/g, 'h')
-    .replace(/м/g, 'm');
+  return str.replace(/д/g, 'd').replace(/ч/g, 'h').replace(/м/g, 'm');
 }
 
 function countLetter(str: string, letter: string): number {
@@ -60,15 +57,15 @@ function countLetter(str: string, letter: string): number {
 }
 
 function isCountExceeded(str: string): boolean {
-  return ['d', 'h', 'm'].some(letter => countLetter(str, letter) > 1);
+  return ['d', 'h', 'm'].some((letter) => countLetter(str, letter) > 1);
 }
 
 function isIdentifierPositionViolated(str: string): boolean {
   let prev = -Infinity;
   return ['d', 'h', 'm']
-    .map(identifier => str.indexOf(identifier))
-    .filter(value => value !== -1)
-    .some(position => {
+    .map((identifier) => str.indexOf(identifier))
+    .filter((value) => value !== -1)
+    .some((position) => {
       if (position <= prev) {
         return true;
       }
