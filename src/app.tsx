@@ -1,12 +1,12 @@
 import AppLayout from '@awsui/components-react/app-layout';
 import Button from '@awsui/components-react/button';
+import Cards from '@awsui/components-react/cards';
 import ColumnLayout from '@awsui/components-react/column-layout';
 import Container from '@awsui/components-react/container';
 import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import Table from '@awsui/components-react/table';
 import { useState } from 'react';
 
 export function App() {
@@ -20,6 +20,10 @@ function Content() {
   const items = [
     { title: 'Опыт', hourly: '5kkk', daily: '120kkk' },
     { title: 'Адена', hourly: '500k', daily: '12kk' },
+  ];
+  const cardItems = [
+    { header: 'За 1 час', exp: '5kkk', adena: '500k' },
+    { header: 'За 24 час', exp: '120kkk', adena: '12kk' },
   ];
 
   return (
@@ -51,15 +55,18 @@ function Content() {
             <Input value={adena} onChange={(event) => setAdena(event.detail.value)} />
           </FormField>
         </SpaceBetween>
-
-        <Table
-          items={items}
-          columnDefinitions={[
-            { header: '', cell: (item) => item.title },
-            { header: 'За 1 час', cell: (item) => item.hourly },
-            { header: 'За 24 часа', cell: (item) => item.daily },
-          ]}
-        ></Table>
+        <Cards
+          trackBy={'header'}
+          items={cardItems}
+          cardDefinition={{
+            header: (item) => item.header,
+            sections: [
+              { header: 'Опыт', content: (item) => item.exp },
+              { header: 'Адена', content: (item) => item.adena },
+            ],
+          }}
+          cardsPerRow={[{ cards: 2 }]}
+        ></Cards>
       </ColumnLayout>
     </Container>
   );
