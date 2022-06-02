@@ -17,13 +17,9 @@ function Content() {
   const [exp, setExp] = useState('250kk');
   const [time, setTime] = useState('1ч 20мин');
   const [adena, setAdena] = useState('15кк');
-  const items = [
-    { title: 'Опыт', hourly: '5kkk', daily: '120kkk' },
-    { title: 'Адена', hourly: '500k', daily: '12kk' },
-  ];
   const cardItems = [
     { header: 'За 1 час', exp: '5kkk', adena: '500k' },
-    { header: 'За 24 час', exp: '120kkk', adena: '12kk' },
+    { header: 'За 24 часа', exp: '120kkk', adena: '12kk' },
   ];
 
   return (
