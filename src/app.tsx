@@ -7,7 +7,7 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { formatNumber } from './helpers/format-number';
 import { parseNumber } from './helpers/parse-number';
 import { parseTime } from './helpers/parse-time';
@@ -18,8 +18,10 @@ export function App() {
 
 function Content() {
   const [exp, setExp] = useState('');
-  const [time, setTime] = useState('');
   const [adena, setAdena] = useState('');
+  const [time, setTime] = useState('');
+
+  const expInputRef = useRef<HTMLInputElement>(null);
 
   const parsedTime = parseTime(time);
   const isTimeCorrect = Number.isFinite(parsedTime) && parsedTime > 0;
@@ -38,6 +40,7 @@ function Content() {
     setTime('');
     setAdena('');
     setExp('');
+    expInputRef.current?.focus();
   };
 
   return (
@@ -60,7 +63,7 @@ function Content() {
       <ColumnLayout columns={2} variant="text-grid">
         <SpaceBetween direction="vertical" size="s">
           <FormField label="Опыт" constraintText="Например, 250kk">
-            <Input value={exp} onChange={(event) => setExp(event.detail.value)} />
+            <Input ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
           </FormField>
 
           <FormField label="Адена" constraintText="Например, 15kk">
