@@ -7,20 +7,41 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { formatNumber } from './helpers/format-number';
+import { parseNumber } from './helpers/parse-number';
+import { parseTime } from './helpers/parse-time';
 
 export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
 }
 
+interface CardItem {
+  header: string;
+  exp: string;
+  adena: string;
+}
+
 function Content() {
   const [exp, setExp] = useState('250kk');
-  const [time, setTime] = useState('1ч 20мин');
+  const [time, setTime] = useState('1ч 20м');
   const [adena, setAdena] = useState('15кк');
-  const cardItems = [
-    { header: 'За 1 час', exp: '5kkk', adena: '500k' },
-    { header: 'За 24 часа', exp: '120kkk', adena: '12kk' },
-  ];
+
+  const parsedTime = parseTime(time);
+  const isTimeCorrect = Number.isFinite(parsedTime) && parsedTime > 0;
+  const perMinute = useCallback(
+    (value: number) => (isTimeCorrect ? value / parsedTime : 0),
+    [parsedTime, isTimeCorrect],
+  );
+  const perHour = useCallback((value: number) => perMinute(value) * 60, [perMinute]);
+  const perDay = useCallback((value: number) => perHour(value) * 24, [perHour]);
+
+  const parsedExp = parseNumber(exp);
+  const isExpCorrect = Number.isFinite(parsedExp);
+
+  const parsedAdena = parseNumber(adena);
+  const isAdenaCorrect = Number.isFinite(parsedAdena);
+  const showResults = isTimeCorrect && (isAdenaCorrect || isExpCorrect);
 
   return (
     <Container
@@ -51,18 +72,31 @@ function Content() {
             <Input value={adena} onChange={(event) => setAdena(event.detail.value)} />
           </FormField>
         </SpaceBetween>
-        <Cards
-          trackBy={'header'}
-          items={cardItems}
-          cardDefinition={{
-            header: (item) => item.header,
-            sections: [
-              { header: 'Опыт', content: (item) => item.exp },
-              { header: 'Адена', content: (item) => item.adena },
-            ],
-          }}
-          cardsPerRow={[{ cards: 2 }]}
-        ></Cards>
+        {showResults && (
+          <Cards
+            trackBy={'header'}
+            items={[
+              {
+                header: 'За 1 час',
+                adena: isAdenaCorrect ? formatNumber(perHour(parsedAdena)) : '-',
+                exp: isExpCorrect ? formatNumber(perDay(parsedAdena)) : '-',
+              },
+              {
+                header: 'За 24 часа',
+                adena: isAdenaCorrect ? formatNumber(perHour(parsedExp)) : '-',
+                exp: isExpCorrect ? formatNumber(perDay(parsedExp)) : '-',
+              },
+            ]}
+            cardDefinition={{
+              header: (item) => item.header,
+              sections: [
+                { header: 'Опыт', content: (item) => item.exp },
+                { header: 'Адена', content: (item) => item.adena },
+              ],
+            }}
+            cardsPerRow={[{ cards: 2 }]}
+          ></Cards>
+        )}
       </ColumnLayout>
     </Container>
   );
