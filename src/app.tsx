@@ -16,6 +16,13 @@ export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
 }
 
+interface CardItem {
+  id: 'hourly' | 'daily';
+  header: string;
+  exp: string;
+  adena: string;
+}
+
 function Content() {
   const [exp, setExp] = useState('');
   const [adena, setAdena] = useState('');
@@ -36,6 +43,21 @@ function Content() {
   const isAdenaCorrect = Number.isFinite(parsedAdena);
   const showResults = isTimeCorrect && (isAdenaCorrect || isExpCorrect);
 
+  const cardItems: Array<CardItem> = [
+    {
+      header: 'За 1 час',
+      id: 'hourly',
+      adena: isAdenaCorrect ? formatNumber(perHour(parsedAdena)) : '-',
+      exp: isExpCorrect ? formatNumber(perHour(parsedExp)) : '-',
+    },
+    {
+      header: 'За 24 часа',
+      id: 'daily',
+      adena: isAdenaCorrect ? formatNumber(perDay(parsedAdena)) : '-',
+      exp: isExpCorrect ? formatNumber(perDay(parsedExp)) : '-',
+    },
+  ];
+
   const onClearButtonClick = () => {
     setTime('');
     setAdena('');
@@ -50,7 +72,7 @@ function Content() {
           variant="h3"
           actions={
             <SpaceBetween size="s" direction="horizontal">
-              <Button variant="normal" onClick={onClearButtonClick}>
+              <Button data-testid="clear-button" variant="normal" onClick={onClearButtonClick}>
                 Очистить
               </Button>
             </SpaceBetween>
@@ -63,37 +85,30 @@ function Content() {
       <ColumnLayout columns={2} variant="text-grid">
         <SpaceBetween direction="vertical" size="s">
           <FormField label="Опыт" constraintText="Например, 250kk">
-            <Input ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
+            <Input data-testid="exp" ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
           </FormField>
 
           <FormField label="Адена" constraintText="Например, 15kk">
-            <Input value={adena} onChange={(event) => setAdena(event.detail.value)} />
+            <Input data-testid="adena" value={adena} onChange={(event) => setAdena(event.detail.value)} />
           </FormField>
 
           <FormField label="Затраченное время" constraintText="Например, 1ч 20м или 1h 20m">
-            <Input value={time} onChange={(event) => setTime(event.detail.value)} />
+            <Input data-testid="time" value={time} onChange={(event) => setTime(event.detail.value)} />
           </FormField>
         </SpaceBetween>
         {showResults && (
           <Cards
+            data-testid="results"
             trackBy={'header'}
-            items={[
-              {
-                header: 'За 1 час',
-                adena: isAdenaCorrect ? formatNumber(perHour(parsedAdena)) : '-',
-                exp: isExpCorrect ? formatNumber(perHour(parsedExp)) : '-',
-              },
-              {
-                header: 'За 24 часа',
-                adena: isAdenaCorrect ? formatNumber(perDay(parsedAdena)) : '-',
-                exp: isExpCorrect ? formatNumber(perDay(parsedExp)) : '-',
-              },
-            ]}
+            items={cardItems}
             cardDefinition={{
               header: (item) => item.header,
               sections: [
-                { header: 'Опыт', content: (item) => item.exp },
-                { header: 'Адена', content: (item) => item.adena },
+                { header: 'Опыт', content: (item) => <span data-testid={sectionTestId(item, 'exp')}>{item.exp}</span> },
+                {
+                  header: 'Адена',
+                  content: (item) => <span data-testid={sectionTestId(item, 'adena')}>{item.adena}</span>,
+                },
               ],
             }}
             cardsPerRow={[{ cards: 2 }]}
@@ -102,4 +117,8 @@ function Content() {
       </ColumnLayout>
     </Container>
   );
+}
+
+function sectionTestId(item: CardItem, variant: 'adena' | 'exp') {
+  return `section-${variant}-${item.id}`;
 }
