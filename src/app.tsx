@@ -7,10 +7,11 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatNumber } from './helpers/format-number';
 import { parseNumber } from './helpers/parse-number';
 import { parseTime } from './helpers/parse-time';
+import { useAppSearchParams } from './hooks/use-app-search-params/use-app-search-params';
 
 export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
@@ -23,10 +24,18 @@ interface CardItem {
   adena: string;
 }
 
+const searchParamsConfig = {
+  exp: '',
+  adena: '',
+  time: '',
+};
+
 function Content() {
-  const [exp, setExp] = useState('');
-  const [adena, setAdena] = useState('');
-  const [time, setTime] = useState('');
+  const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
+
+  const [exp, setExp] = useState(searchParams.exp);
+  const [adena, setAdena] = useState(searchParams.adena);
+  const [time, setTime] = useState(searchParams.time);
 
   const expInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +73,10 @@ function Content() {
     setExp('');
     expInputRef.current?.focus();
   };
+
+  useEffect(() => {
+    setSearchParams({ exp, time, adena });
+  }, [exp, adena, time, setSearchParams]);
 
   return (
     <Container
