@@ -90,4 +90,42 @@ describe('basic tests', () => {
       cy.get(selectors.inputs.exp).should('have.focus');
     });
   });
+
+  describe('url sync', () => {
+    describe('exp', () => {
+      it('initial', () => {
+        cy.visit('/?exp=10kk');
+        cy.get(selectors.inputs.exp).should('have.value', '10kk');
+      });
+
+      it('updates', () => {
+        cy.get(selectors.inputs.exp).type('10kk');
+        cy.url().should('contain', 'exp=10kk');
+      });
+    });
+
+    describe('adena', () => {
+      it('initial', () => {
+        cy.visit('/?adena=10kk');
+        cy.get(selectors.inputs.adena).should('have.value', '10kk');
+      });
+
+      it('updates', () => {
+        cy.get(selectors.inputs.adena).type('10kk');
+        cy.url().should('contain', 'adena=10kk');
+      });
+    });
+
+    describe('time', () => {
+      it('initial', () => {
+        cy.visit('/?time=1h20m');
+        cy.get(selectors.inputs.time).should('have.value', '1h20m');
+      });
+
+      it('updates', () => {
+        cy.get(selectors.inputs.time).type('1h20m');
+        cy.url().should('contain', 'time=1h20m');
+      });
+    });
+  });
 });

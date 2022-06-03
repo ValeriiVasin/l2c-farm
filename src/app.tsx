@@ -24,16 +24,18 @@ interface CardItem {
   adena: string;
 }
 
-function Content() {
-  const { searchParams, setSearchParams } = useAppSearchParams({
-    exp: '',
-    adena: '',
-    time: '',
-  });
+const searchParamsConfig = {
+  exp: '',
+  adena: '',
+  time: '',
+};
 
-  const [exp, setExp] = useState('');
-  const [adena, setAdena] = useState('');
-  const [time, setTime] = useState('');
+function Content() {
+  const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
+
+  const [exp, setExp] = useState(searchParams.exp);
+  const [adena, setAdena] = useState(searchParams.adena);
+  const [time, setTime] = useState(searchParams.time);
 
   const expInputRef = useRef<HTMLInputElement>(null);
 
@@ -73,10 +75,8 @@ function Content() {
   };
 
   useEffect(() => {
-    setExp(searchParams.exp);
-    setAdena(searchParams.adena);
-    setTime(searchParams.time);
-  }, []);
+    setSearchParams({ exp, time, adena });
+  }, [exp, adena, time, setSearchParams]);
 
   return (
     <Container
