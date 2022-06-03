@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Install ependencies
+      - name: Install dependencies
         run: npm ci
       - name: Lint and Check types
         run: |
