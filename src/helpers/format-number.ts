@@ -1,44 +1,28 @@
-export function formatNumber(exp: number): string {
-  if (exp < 1000) {
-    return String(exp);
-  }
-
-  if (exp <= 1_000_000) {
-    const value = Math.round(exp / 1000);
-
-    return value === 1_000 ? '1kk' : `${value}k`;
-  }
-
+export function formatNumber(value: number): string {
   const base = 1_000;
   let power = 0;
 
-  while (exp >= base) {
+  while (value >= base) {
     power += 1;
-    exp = exp / base;
+    value /= base;
   }
 
-  if (Math.round(exp) === base) {
-    return `1${'k'.repeat(power + 1)}`;
+  // 9.99k => 10k
+  if (power === 1) {
+    value = Math.round(value);
   }
 
-  return `${format(exp, 2)}${'k'.repeat(power)}`;
+  // fix 999.999 => 1000.00 roundation by toFixed()
+  if (value > 999.994) {
+    value = 1;
+    power++;
+  }
+
+  return `${format(value, 2)}${'k'.repeat(power)}`;
 }
 
-function format(value: number, digits: number) {
-  const ceil = Math.floor(value);
-  let frac = Math.round((value - ceil) * Math.pow(10, digits));
-
-  if (frac === 0) {
-    return ceil;
-  }
-
-  while (frac % 10 === 0) {
-    frac /= 10;
-  }
-
-  if (frac === 0) {
-    return ceil;
-  }
-
-  return `${ceil}.${frac}`;
+function format(value: number, digits: number): string {
+  // replace trailing zeros from toFixed(): 1.70 => 1.7
+  // replace extra dot case after zeros removal: 1. => 1
+  return value.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '');
 }

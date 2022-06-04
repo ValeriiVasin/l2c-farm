@@ -19,9 +19,15 @@ describe('format exp', () => {
     expect(formatNumber(1_788_000)).toBe('1.79kk');
     expect(formatNumber(22_300_000)).toBe('22.3kk');
     expect(formatNumber(999_999_000)).toBe('1kkk');
+    expect(formatNumber(1.06 * 1_000_000)).toBe('1.06kk');
   });
 
-  test('edge cases', () => {
+  test('numbers without frac', () => {
+    expect(formatNumber(1_000_000)).toBe('1kk');
     expect(formatNumber(270_000_000)).toBe('270kk');
+  });
+
+  test('number with lots of digits in frac part', () => {
+    expect(formatNumber(1_000_000.0000000001)).toBe('1kk');
   });
 });
