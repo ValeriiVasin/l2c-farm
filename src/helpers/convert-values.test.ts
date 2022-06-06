@@ -1,34 +1,51 @@
 import { describe, test } from '@jest/globals';
+import type { ConvertValuesInput, ConvertValuesOutput } from './convert-values';
 import { convertValues } from './convert-values';
 
 describe('convert values', () => {
-  let values: { exp: string; adena: string; time: string };
+  let values: ConvertValuesInput;
+  let result: ConvertValuesOutput;
 
   beforeEach(() => {
     values = { exp: '10kkk', adena: '1kk', time: '1h' };
+    result = {
+      isExpCorrect: true,
+      isTimeCorrect: true,
+      isAdenaCorrect: true,
+      hourlyAdena: '1kk',
+      hourlyExp: '10kkk',
+      dailyAdena: '24kk',
+      dailyExp: '240kkk',
+    };
   });
 
   test('incorrect time', () => {
     values.time = 'hello world';
+    result = {
+      ...result,
+      isTimeCorrect: false,
+      hourlyAdena: '-',
+      hourlyExp: '-',
+      dailyAdena: '-',
+      dailyExp: '-',
+    };
 
-    expect(convertValues('daily', values)).toEqual({ exp: '-', adena: '-' });
+    expect(convertValues(values)).toEqual(result);
   });
 
   test('incorrect adena', () => {
     values.adena = 'hello world';
-    expect(convertValues('daily', values)).toEqual({ exp: '240kkk', adena: '-' });
+    result = { ...result, isAdenaCorrect: false, dailyAdena: '-', hourlyAdena: '-' };
+    expect(convertValues(values)).toEqual(result);
   });
 
   test('incorrect exp', () => {
     values.exp = 'hello world';
-    expect(convertValues('daily', values)).toEqual({ exp: '-', adena: '24kk' });
+    result = { ...result, isExpCorrect: false, hourlyExp: '-', dailyExp: '-' };
+    expect(convertValues(values)).toEqual(result);
   });
 
-  test('convert to daily', () => {
-    expect(convertValues('daily', values)).toEqual({ exp: '240kkk', adena: '24kk' });
-  });
-
-  test('convert to hourly', () => {
-    expect(convertValues('hourly', values)).toEqual({ exp: '10kkk', adena: '1kk' });
+  test('converts to hourly and daily', () => {
+    expect(convertValues(values)).toEqual(result);
   });
 });

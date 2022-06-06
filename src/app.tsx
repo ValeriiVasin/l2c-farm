@@ -8,6 +8,7 @@ import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
 import { useEffect, useRef, useState } from 'react';
+import { pinItem } from './components/pinned-results/helpers/storage';
 import { PinnedResults } from './components/pinned-results/pinned-results';
 import { formatNumber } from './helpers/format-number';
 import { parseNumber } from './helpers/parse-number';
@@ -75,6 +76,10 @@ function Content() {
     expInputRef.current?.focus();
   };
 
+  const onPinButtonClick = () => {
+    pinItem({ adena, exp, time, character: 'не указан', comment: '', timestamp: Date.now() });
+  };
+
   useEffect(() => {
     setSearchParams({ exp, time, adena });
   }, [exp, adena, time, setSearchParams]);
@@ -87,7 +92,7 @@ function Content() {
             variant="h3"
             actions={
               <SpaceBetween size="s" direction="horizontal">
-                <Button data-testid="pin-button" variant="primary" disabled={!showResults}>
+                <Button data-testid="pin-button" variant="primary" disabled={!showResults} onClick={onPinButtonClick}>
                   Закрепить
                 </Button>
                 <Button data-testid="clear-button" variant="normal" onClick={onClearButtonClick}>
