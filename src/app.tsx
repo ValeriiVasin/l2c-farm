@@ -8,6 +8,7 @@ import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
 import { useEffect, useRef, useState } from 'react';
+import { PinnedResults } from './components/pinned-results/pinned-results';
 import { formatNumber } from './helpers/format-number';
 import { parseNumber } from './helpers/parse-number';
 import { parseTime } from './helpers/parse-time';
@@ -79,56 +80,65 @@ function Content() {
   }, [exp, adena, time, setSearchParams]);
 
   return (
-    <Container
-      header={
-        <Header
-          variant="h3"
-          actions={
-            <SpaceBetween size="s" direction="horizontal">
-              <Button data-testid="clear-button" variant="normal" onClick={onClearButtonClick}>
-                Очистить
-              </Button>
-            </SpaceBetween>
-          }
-        >
-          Калькулятор Фарма
-        </Header>
-      }
-    >
-      <ColumnLayout columns={2} variant="text-grid">
-        <SpaceBetween direction="vertical" size="s">
-          <FormField label="Опыт" constraintText="Например, 250kk">
-            <Input data-testid="exp" ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
-          </FormField>
+    <SpaceBetween size="l">
+      <Container
+        header={
+          <Header
+            variant="h3"
+            actions={
+              <SpaceBetween size="s" direction="horizontal">
+                <Button data-testid="pin-button" variant="primary" disabled={!showResults}>
+                  Закрепить
+                </Button>
+                <Button data-testid="clear-button" variant="normal" onClick={onClearButtonClick}>
+                  Очистить
+                </Button>
+              </SpaceBetween>
+            }
+          >
+            Калькулятор Фарма
+          </Header>
+        }
+      >
+        <ColumnLayout columns={2} variant="text-grid">
+          <SpaceBetween direction="vertical" size="s">
+            <FormField label="Опыт" constraintText="Например, 250kk">
+              <Input data-testid="exp" ref={expInputRef} value={exp} onChange={(event) => setExp(event.detail.value)} />
+            </FormField>
 
-          <FormField label="Адена" constraintText="Например, 15kk">
-            <Input data-testid="adena" value={adena} onChange={(event) => setAdena(event.detail.value)} />
-          </FormField>
+            <FormField label="Адена" constraintText="Например, 15kk">
+              <Input data-testid="adena" value={adena} onChange={(event) => setAdena(event.detail.value)} />
+            </FormField>
 
-          <FormField label="Затраченное время" constraintText="Например, 1ч 20м или 1h 20m">
-            <Input data-testid="time" value={time} onChange={(event) => setTime(event.detail.value)} />
-          </FormField>
-        </SpaceBetween>
-        {showResults && (
-          <Cards
-            data-testid="results"
-            trackBy={'header'}
-            items={cardItems}
-            cardDefinition={{
-              header: (item) => item.header,
-              sections: [
-                { header: 'Опыт', content: (item) => <span data-testid={sectionTestId(item, 'exp')}>{item.exp}</span> },
-                {
-                  header: 'Адена',
-                  content: (item) => <span data-testid={sectionTestId(item, 'adena')}>{item.adena}</span>,
-                },
-              ],
-            }}
-            cardsPerRow={[{ cards: 2 }]}
-          ></Cards>
-        )}
-      </ColumnLayout>
-    </Container>
+            <FormField label="Затраченное время" constraintText="Например, 1ч 20м или 1h 20m">
+              <Input data-testid="time" value={time} onChange={(event) => setTime(event.detail.value)} />
+            </FormField>
+          </SpaceBetween>
+          {showResults && (
+            <Cards
+              data-testid="results"
+              trackBy={'header'}
+              items={cardItems}
+              cardDefinition={{
+                header: (item) => <Header variant="h3">{item.header}</Header>,
+                sections: [
+                  {
+                    header: 'Опыт',
+                    content: (item) => <span data-testid={sectionTestId(item, 'exp')}>{item.exp}</span>,
+                  },
+                  {
+                    header: 'Адена',
+                    content: (item) => <span data-testid={sectionTestId(item, 'adena')}>{item.adena}</span>,
+                  },
+                ],
+              }}
+              cardsPerRow={[{ cards: 2 }]}
+            ></Cards>
+          )}
+        </ColumnLayout>
+      </Container>
+      <PinnedResults />
+    </SpaceBetween>
   );
 }
 
