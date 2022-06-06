@@ -1,14 +1,31 @@
 import { Header } from '@awsui/components-react';
 import Table from '@awsui/components-react/table';
+import { convertValues } from '../../helpers/convert-values';
 import type { PinnedUiItem } from '../../types';
+import { getItems } from './helpers/storage';
 
 export function PinnedResults() {
-  const items: Array<PinnedUiItem> = [];
+  const items = getItems();
+  const uiItems: Array<PinnedUiItem> = items.map((item) => {
+    const convertedValues = convertValues({ time: item.time, adena: item.adena, exp: item.exp });
+    return {
+      timestamp: item.timestamp,
+      character: item.character,
+      comment: item.character,
+      dailyAdena: convertedValues.dailyAdena,
+      dailyExp: convertedValues.dailyExp,
+    };
+  });
+
+  if (uiItems.length === 0) {
+    return null;
+  }
+
   return (
     <Table
       header={<Header variant="h3">Закрепленные Результаты</Header>}
       trackBy="timestamp"
-      items={items}
+      items={uiItems}
       columnDefinitions={[
         { header: 'Дата', cell: (item) => item.timestamp },
         { header: 'Персонаж', cell: (item) => item.character },
