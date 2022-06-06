@@ -1,16 +1,9 @@
 import { Header } from '@awsui/components-react';
 import Table from '@awsui/components-react/table';
-
-interface PinnedItem {
-  timestamp: number;
-  character: string;
-  dailyExp: string;
-  dailyAdena: string;
-  comment: string;
-}
+import type { PinnedUiItem } from '../../types';
 
 export function PinnedResults() {
-  const items: Array<PinnedItem> = [];
+  const items: Array<PinnedUiItem> = [];
   return (
     <Table
       header={<Header variant="h3">Закрепленные Результаты</Header>}
