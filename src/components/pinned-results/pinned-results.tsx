@@ -1,17 +1,15 @@
 import { Header } from '@awsui/components-react';
 import Table from '@awsui/components-react/table';
 import { convertValues } from '../../helpers/convert-values';
-import type { PinnedUiItem } from '../../types';
-import { getItems } from './helpers/storage';
+import type { PinnedResult, PinnedUiItem } from '../../types';
 
-export function PinnedResults() {
-  const items = getItems();
-  const uiItems: Array<PinnedUiItem> = items.map((item) => {
-    const convertedValues = convertValues({ time: item.time, adena: item.adena, exp: item.exp });
+export function PinnedResults({ results }: { results: Array<PinnedResult> }) {
+  const uiItems: Array<PinnedUiItem> = results.map((result) => {
+    const convertedValues = convertValues({ time: result.time, adena: result.adena, exp: result.exp });
     return {
-      timestamp: item.timestamp,
-      character: item.character,
-      comment: item.character,
+      timestamp: result.timestamp,
+      character: result.character,
+      comment: result.character,
       dailyAdena: convertedValues.dailyAdena,
       dailyExp: convertedValues.dailyExp,
     };

@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import type { PinnedItem } from '../types';
+import type { PinnedResult } from '../types';
 import { getPinnedResults } from './get-pinned-results';
 
 const getItemMock = jest.fn<string | null, [string]>();
@@ -28,7 +28,7 @@ describe('get pinned items', () => {
   });
 
   test('return parsed items', () => {
-    const items: Array<PinnedItem> = [
+    const items: Array<PinnedResult> = [
       { timestamp: 123, exp: '1kk', adena: '10k', time: '1h', comment: 'no comment', character: 'no char' },
     ];
     getItemMock.mockReturnValue(JSON.stringify(items));

@@ -7,11 +7,13 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { pinItem } from './components/pinned-results/helpers/storage';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PinnedResults } from './components/pinned-results/pinned-results';
 import { convertValues } from './helpers/convert-values';
+import { getPinnedResults } from './helpers/get-pinned-results';
+import { savePinnedResults } from './helpers/save-pinned-results';
 import { useAppSearchParams } from './hooks/use-app-search-params/use-app-search-params';
+import type { PinnedResult } from './types';
 
 export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
@@ -32,6 +34,15 @@ const searchParamsConfig = {
 
 function Content() {
   const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
+  const [pinnedResults, setPinnedResults] = useState(getPinnedResults());
+  const pinResult = useCallback(
+    (item: PinnedResult) => {
+      const nextPinnedItems = [item, ...pinnedResults];
+      setPinnedResults(nextPinnedItems);
+      savePinnedResults(nextPinnedItems);
+    },
+    [pinnedResults],
+  );
 
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
@@ -70,7 +81,7 @@ function Content() {
   };
 
   const onPinButtonClick = () => {
-    pinItem({ adena, exp, time, character: 'не указан', comment: '', timestamp: Date.now() });
+    pinResult({ adena, exp, time, character: 'не указан', comment: '', timestamp: Date.now() });
   };
 
   useEffect(() => {
@@ -135,7 +146,7 @@ function Content() {
           )}
         </ColumnLayout>
       </Container>
-      <PinnedResults />
+      <PinnedResults results={pinnedResults} />
     </SpaceBetween>
   );
 }

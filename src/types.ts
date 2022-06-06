@@ -1,4 +1,4 @@
-export interface PinnedItem {
+export interface PinnedResult {
   timestamp: number;
   exp: string;
   adena: string;

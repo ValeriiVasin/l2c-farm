@@ -1,7 +1,7 @@
 import { pinnedResultsKey } from '../constants/pinned-results-key';
-import type { PinnedItem } from '../types';
+import type { PinnedResult } from '../types';
 
-export function getPinnedResults(): Array<PinnedItem> {
+export function getPinnedResults(): Array<PinnedResult> {
   try {
     const value = window.localStorage.getItem(pinnedResultsKey);
 
