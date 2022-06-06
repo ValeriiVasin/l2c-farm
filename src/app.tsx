@@ -7,12 +7,10 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { pinItem } from './components/pinned-results/helpers/storage';
 import { PinnedResults } from './components/pinned-results/pinned-results';
-import { formatNumber } from './helpers/format-number';
-import { parseNumber } from './helpers/parse-number';
-import { parseTime } from './helpers/parse-time';
+import { convertValues } from './helpers/convert-values';
 import { useAppSearchParams } from './hooks/use-app-search-params/use-app-search-params';
 
 export function App() {
@@ -41,33 +39,28 @@ function Content() {
 
   const expInputRef = useRef<HTMLInputElement>(null);
 
-  const parsedTime = parseTime(time);
-  const isTimeCorrect = Number.isFinite(parsedTime) && parsedTime > 0;
-  const perMinute = (value: number) => (isTimeCorrect ? value / parsedTime : 0);
-  const perHour = (value: number) => perMinute(value) * 60;
-  const perDay = (value: number) => perHour(value) * 24;
-
-  const parsedExp = parseNumber(exp);
-  const isExpCorrect = Number.isFinite(parsedExp);
-
-  const parsedAdena = parseNumber(adena);
-  const isAdenaCorrect = Number.isFinite(parsedAdena);
-  const showResults = isTimeCorrect && (isAdenaCorrect || isExpCorrect);
-
-  const cardItems: Array<CardItem> = [
-    {
-      header: 'За 1 час',
-      id: 'hourly',
-      adena: isAdenaCorrect ? formatNumber(perHour(parsedAdena)) : '-',
-      exp: isExpCorrect ? formatNumber(perHour(parsedExp)) : '-',
-    },
-    {
-      header: 'За 24 часа',
-      id: 'daily',
-      adena: isAdenaCorrect ? formatNumber(perDay(parsedAdena)) : '-',
-      exp: isExpCorrect ? formatNumber(perDay(parsedExp)) : '-',
-    },
-  ];
+  const convertedValues = useMemo(() => convertValues({ time, exp, adena }), [time, exp, adena]);
+  const cardItems: Array<CardItem> = useMemo(
+    () => [
+      {
+        header: 'За 1 час',
+        id: 'hourly',
+        adena: convertedValues.hourlyAdena,
+        exp: convertedValues.hourlyExp,
+      },
+      {
+        header: 'За 24 часа',
+        id: 'daily',
+        adena: convertedValues.dailyAdena,
+        exp: convertedValues.dailyExp,
+      },
+    ],
+    [convertedValues],
+  );
+  const showResults = useMemo(
+    () => convertedValues.isTimeCorrect && (convertedValues.isAdenaCorrect || convertedValues.isExpCorrect),
+    [convertedValues],
+  );
 
   const onClearButtonClick = () => {
     setTime('');
