@@ -14,3 +14,5 @@ export interface PinnedUiItem {
   dailyAdena: string;
   comment: string;
 }
+
+export type ValueVariant = 'daily' | 'hourly';
