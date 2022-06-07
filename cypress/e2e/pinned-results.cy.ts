@@ -5,6 +5,7 @@ import { ResultTableField, selectors, wrappers } from '../helpers/selectors';
 describe('Pinned results', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.clock(new Date('2022-05-31 00:00:00'));
   });
 
   afterEach(() => {
@@ -15,7 +16,7 @@ describe('Pinned results', () => {
     cy.get(selectors.pinButton).should('be.disabled');
   });
 
-  it('pin button is enabled when result can be shown', () => {
+  it('pin button is enabled when result can be pinned', () => {
     fillForm({ time: '1h', exp: '1kkk', adena: '1kk' });
     cy.get(selectors.pinButton).should('be.enabled');
   });
@@ -30,14 +31,25 @@ describe('Pinned results', () => {
     cy.get(selectors.pinnedResultsRows).should('have.length', 1);
   });
 
+  it('pinned item is being preserved', () => {
+    pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
+    cy.reload();
+    cy.get(selectors.pinnedResultsRows).should('have.length', 1);
+  });
+
   it('adding pin for the first time sets default character name', () => {
     pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
     cy.get(wrappers.indexedRowCell(1, ResultTableField.Character).toSelector()).should('have.text', 'не указан');
   });
 
+  it('pinned item is having proper date', () => {
+    pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
+    cy.get(wrappers.indexedRowCell(1, ResultTableField.Datetime).toSelector()).should('have.text', '31.05.2022 00:00');
+  });
+
   xit('adding pin is using previous character name');
-  xit('remove single saved item');
+  xit('remove single saved item removes the section');
   xit('pinned results are ordered by the timestamp');
-  xit('edit character');
+  xit('edit character name');
   xit('edit comment');
 });
