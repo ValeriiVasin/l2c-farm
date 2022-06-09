@@ -9,9 +9,10 @@ import type { PinnedResult, PinnedUiItem } from '../../types';
 interface PinnedResultsProps {
   results: Array<PinnedResult>;
   onClearButtonClick: () => void;
+  onItemRemoveButtonClick: (timestamp: number) => void;
 }
 
-export function PinnedResults({ results, onClearButtonClick }: PinnedResultsProps) {
+export function PinnedResults({ results, onClearButtonClick, onItemRemoveButtonClick }: PinnedResultsProps) {
   const uiItems: Array<PinnedUiItem> = results.map((result) => {
     const convertedValues = convertValues({ time: result.time, adena: result.adena, exp: result.exp });
     return {
@@ -26,10 +27,6 @@ export function PinnedResults({ results, onClearButtonClick }: PinnedResultsProp
   if (uiItems.length === 0) {
     return null;
   }
-
-  const remove = (item: PinnedUiItem) => {
-    // TBD
-  };
 
   return (
     <Table
@@ -61,8 +58,8 @@ export function PinnedResults({ results, onClearButtonClick }: PinnedResultsProp
               <span title="Редактировать">
                 <Button variant="inline-icon" iconName="edit" />
               </span>
-              <span title="Удалить" onClick={() => remove(item)}>
-                <Button variant="inline-icon" iconName="close" />
+              <span title="Удалить" onClick={() => onItemRemoveButtonClick(item.timestamp)}>
+                <Button data-testid={`remove-item-${item.timestamp}`} variant="inline-icon" iconName="close" />
               </span>
             </SpaceBetween>
           ),

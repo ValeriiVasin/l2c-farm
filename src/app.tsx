@@ -48,6 +48,12 @@ function Content() {
     savePinnedResults([]);
   };
 
+  const removeItem = (timestamp: number) => {
+    const nextResults = pinnedResults.filter((result) => result.timestamp !== timestamp);
+    setPinnedResults(nextResults);
+    savePinnedResults(nextResults);
+  };
+
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
   const [time, setTime] = useState(searchParams.time);
@@ -150,7 +156,7 @@ function Content() {
           )}
         </ColumnLayout>
       </Container>
-      <PinnedResults results={pinnedResults} onClearButtonClick={clearResults} />
+      <PinnedResults results={pinnedResults} onClearButtonClick={clearResults} onItemRemoveButtonClick={removeItem} />
     </SpaceBetween>
   );
 }

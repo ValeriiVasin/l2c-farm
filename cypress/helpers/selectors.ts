@@ -40,4 +40,5 @@ export const selectors = {
   pinnedResultsTable: wrappers.pinnedResultsTable().toSelector(),
   pinnedResultsRows: wrappers.pinnedResultsRows().toSelector(),
   clearPinnedResultsButton: testId('clear-pinned-results-button'),
+  removeItemButton: (timestamp: number) => testId(`remove-item-${timestamp}`),
 };
