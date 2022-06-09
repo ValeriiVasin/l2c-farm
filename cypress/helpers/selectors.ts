@@ -14,7 +14,7 @@ export const enum ResultTableField {
 export const wrappers = {
   pinnedResultsTable: () => createWrapper().findTable(testId('pinned-results-table')),
   pinnedResultsRows: () => wrappers.pinnedResultsTable().findRows(),
-  indexedRowCell: (rowIndex: number, columnIndex: ResultTableField) =>
+  resultTableCell: (rowIndex: number, columnIndex: ResultTableField) =>
     wrappers.pinnedResultsTable().findBodyCell(rowIndex, columnIndex),
 };
 
@@ -41,4 +41,12 @@ export const selectors = {
   pinnedResultsRows: wrappers.pinnedResultsRows().toSelector(),
   clearPinnedResultsButton: testId('clear-pinned-results-button'),
   removeItemButton: (timestamp: number) => testId(`remove-item-${timestamp}`),
+  resultTableCell: (row: number, cell: ResultTableField) => wrappers.resultTableCell(row, cell).toSelector(),
+  editCharacterNameButton: (timestamp: number) => testId(`edit-character-button-${timestamp}`),
+  editCharacterNameInput: (timestamp: number) =>
+    createWrapper()
+      .findInput(testId(`edit-character-input-${timestamp}`))
+      .findNativeInput()
+      .toSelector(),
+  characterName: (timestamp: number) => testId(`character-name-${timestamp}`),
 };

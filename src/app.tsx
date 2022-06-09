@@ -54,6 +54,19 @@ function Content() {
     savePinnedResults(nextResults);
   };
 
+  const changeName = (timestamp: number, name: string) => {
+    const nextResults = pinnedResults.map((result) => {
+      if (result.timestamp !== timestamp) {
+        return result;
+      }
+
+      return result.timestamp === timestamp ? { ...result, character: name ? name : void 0 } : result;
+    });
+
+    setPinnedResults(nextResults);
+    savePinnedResults(nextResults);
+  };
+
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
   const [time, setTime] = useState(searchParams.time);
@@ -91,7 +104,7 @@ function Content() {
   };
 
   const onPinButtonClick = () => {
-    pinResult({ adena, exp, time, character: 'не указан', comment: '', timestamp: Date.now() });
+    pinResult({ adena, exp, time, timestamp: Date.now() });
   };
 
   useEffect(() => {
@@ -156,7 +169,12 @@ function Content() {
           )}
         </ColumnLayout>
       </Container>
-      <PinnedResults results={pinnedResults} onClearButtonClick={clearResults} onItemRemoveButtonClick={removeItem} />
+      <PinnedResults
+        changeName={changeName}
+        results={pinnedResults}
+        onClearButtonClick={clearResults}
+        onItemRemoveButtonClick={removeItem}
+      />
     </SpaceBetween>
   );
 }

@@ -1,6 +1,6 @@
 import { fillForm } from '../helpers/actions/fill-form';
 import { pinItem } from '../helpers/actions/pin-item';
-import { ResultTableField, selectors, wrappers } from '../helpers/selectors';
+import { ResultTableField, selectors } from '../helpers/selectors';
 
 describe('Pinned results', () => {
   let timestamp: number;
@@ -43,12 +43,17 @@ describe('Pinned results', () => {
 
   it('adding pin for the first time sets default character name', () => {
     pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
-    cy.get(wrappers.indexedRowCell(1, ResultTableField.Character).toSelector()).should('have.text', 'не указан');
+    cy.get(selectors.resultTableCell(1, ResultTableField.Character)).should('have.text', 'не указан');
+  });
+
+  it('adding pin for the first time sets default comment', () => {
+    pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
+    cy.get(selectors.resultTableCell(1, ResultTableField.Comment)).should('have.text', 'не указан');
   });
 
   it('pinned item is having proper date', () => {
     pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
-    cy.get(wrappers.indexedRowCell(1, ResultTableField.Datetime).toSelector()).should('have.text', '31.05.2022 00:00');
+    cy.get(selectors.resultTableCell(1, ResultTableField.Datetime)).should('have.text', '31.05.2022 00:00');
   });
 
   it('pinned results clear', () => {
@@ -67,10 +72,53 @@ describe('Pinned results', () => {
     pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
     clock.tick(1000 * 60);
     pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
-    cy.get(wrappers.indexedRowCell(1, ResultTableField.Datetime).toSelector()).should('contain', '31.05.2022 00:01');
+    cy.get(selectors.resultTableCell(1, ResultTableField.Datetime)).should('contain', '31.05.2022 00:01');
   });
 
-  xit('edit character name');
-  xit('adding pin is using previous character name');
-  xit('edit comment');
+  describe('edit character name', () => {
+    beforeEach(() => {
+      pinItem({ adena: '1kk', time: '1h', exp: '1kkk' });
+    });
+
+    it('clicking on edit starts edit and focuses input', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('have.focus');
+    });
+
+    it('edit character with no name set starts from the empty input', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('have.value', '');
+    });
+
+    it('Escape cancels the edit', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).type('{esc}');
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('not.exist');
+    });
+
+    it('Enter key updates the name', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).type('NSDQ{enter}');
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('not.exist');
+      cy.get(selectors.characterName(timestamp)).should('have.text', 'NSDQ');
+    });
+
+    it('start typing and cancel resets the value', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).type('NSDQ{esc}');
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('not.exist');
+      cy.get(selectors.characterName(timestamp)).should('have.text', 'не указан');
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).should('have.value', '');
+    });
+
+    it('submitting empty field sets default name', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).type('{enter}');
+      cy.get(selectors.characterName(timestamp)).should('have.text', 'не указан');
+    });
+  });
+
+  it('adding pin is using previous character name');
+  it('edit comment');
 });

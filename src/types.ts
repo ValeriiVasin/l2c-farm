@@ -3,16 +3,16 @@ export interface PinnedResult {
   exp: string;
   adena: string;
   time: string;
-  character: string;
-  comment: string;
+  character?: string;
+  comment?: string;
 }
 
 export interface PinnedUiItem {
   timestamp: number;
-  character: string;
+  character?: string;
   dailyExp: string;
   dailyAdena: string;
-  comment: string;
+  comment?: string;
 }
 
 export type ValueVariant = 'daily' | 'hourly';
