@@ -43,6 +43,10 @@ function Content() {
     },
     [pinnedResults],
   );
+  const clearResults = () => {
+    setPinnedResults([]);
+    savePinnedResults([]);
+  };
 
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
@@ -146,7 +150,7 @@ function Content() {
           )}
         </ColumnLayout>
       </Container>
-      <PinnedResults results={pinnedResults} />
+      <PinnedResults results={pinnedResults} onClearButtonClick={clearResults} />
     </SpaceBetween>
   );
 }

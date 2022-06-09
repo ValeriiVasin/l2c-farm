@@ -12,7 +12,7 @@ export const enum ResultTableField {
 }
 
 export const wrappers = {
-  pinnedResultsTable: () => createWrapper().findTable(testId('pinned-results')),
+  pinnedResultsTable: () => createWrapper().findTable(testId('pinned-results-table')),
   pinnedResultsRows: () => wrappers.pinnedResultsTable().findRows(),
   indexedRowCell: (rowIndex: number, columnIndex: ResultTableField) =>
     wrappers.pinnedResultsTable().findBodyCell(rowIndex, columnIndex),
@@ -39,4 +39,5 @@ export const selectors = {
   pinButton: createWrapper().findButton(testId('pin-button')).toSelector(),
   pinnedResultsTable: wrappers.pinnedResultsTable().toSelector(),
   pinnedResultsRows: wrappers.pinnedResultsRows().toSelector(),
+  clearPinnedResultsButton: testId('clear-pinned-results-button'),
 };

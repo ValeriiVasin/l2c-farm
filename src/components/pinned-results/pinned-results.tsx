@@ -6,7 +6,12 @@ import { format } from 'date-fns';
 import { convertValues } from '../../helpers/convert-values';
 import type { PinnedResult, PinnedUiItem } from '../../types';
 
-export function PinnedResults({ results }: { results: Array<PinnedResult> }) {
+interface PinnedResultsProps {
+  results: Array<PinnedResult>;
+  onClearButtonClick: () => void;
+}
+
+export function PinnedResults({ results, onClearButtonClick }: PinnedResultsProps) {
   const uiItems: Array<PinnedUiItem> = results.map((result) => {
     const convertedValues = convertValues({ time: result.time, adena: result.adena, exp: result.exp });
     return {
@@ -28,9 +33,16 @@ export function PinnedResults({ results }: { results: Array<PinnedResult> }) {
 
   return (
     <Table
-      data-testid="pinned-results"
+      data-testid="pinned-results-table"
       header={
-        <Header variant="h3" actions={<Button variant="normal">Очистить</Button>}>
+        <Header
+          variant="h3"
+          actions={
+            <Button data-testid="clear-pinned-results-button" variant="normal" onClick={onClearButtonClick}>
+              Очистить
+            </Button>
+          }
+        >
           Закрепленные Результаты
         </Header>
       }
