@@ -42,6 +42,7 @@ export const selectors = {
   clearPinnedResultsButton: testId('clear-pinned-results-button'),
   removeItemButton: (timestamp: number) => testId(`remove-item-${timestamp}`),
   resultTableCell: (row: number, cell: ResultTableField) => wrappers.resultTableCell(row, cell).toSelector(),
+
   editCharacterNameButton: (timestamp: number) => testId(`edit-character-button-${timestamp}`),
   editCharacterNameInput: (timestamp: number) =>
     createWrapper()
@@ -49,4 +50,12 @@ export const selectors = {
       .findNativeInput()
       .toSelector(),
   characterName: (timestamp: number) => testId(`character-${timestamp}`),
+
+  comment: (timestamp: number) => testId(`comment-${timestamp}`),
+  editCommentButton: (timestamp: number) => testId(`edit-comment-button-${timestamp}`),
+  editCommentInput: (timestamp: number) =>
+    createWrapper()
+      .findInput(testId(`edit-comment-input-${timestamp}`))
+      .findNativeInput()
+      .toSelector(),
 };

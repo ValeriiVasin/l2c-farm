@@ -128,8 +128,48 @@ describe('Pinned results', () => {
     });
   });
 
-  describe.skip('edit comment', () => {
-    // TBD
+  describe('edit comment', () => {
+    beforeEach(() => {
+      pinItem({ adena: '1kk', time: '1h', exp: '1kkk' });
+    });
+
+    it('clicking on edit starts edit and focuses input', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).should('have.focus');
+    });
+
+    it('edit comment with no value set starts from the empty input', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).should('have.value', '');
+    });
+
+    it('Escape cancels the edit', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).type('{esc}');
+      cy.get(selectors.editCommentInput(timestamp)).should('not.exist');
+    });
+
+    it('Enter key updates the comment', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).type('Hello World{enter}');
+      cy.get(selectors.editCommentInput(timestamp)).should('not.exist');
+      cy.get(selectors.comment(timestamp)).should('have.text', 'Hello World');
+    });
+
+    it('start typing and cancel resets the value', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).type('Hello World{esc}');
+      cy.get(selectors.editCommentInput(timestamp)).should('not.exist');
+      cy.get(selectors.comment(timestamp)).should('have.text', 'не указан');
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).should('have.value', '');
+    });
+
+    it('submitting empty field sets default comment', () => {
+      cy.get(selectors.editCommentButton(timestamp)).click();
+      cy.get(selectors.editCommentInput(timestamp)).type('{enter}');
+      cy.get(selectors.comment(timestamp)).should('have.text', 'не указан');
+    });
   });
 
   it('date field is having a link');

@@ -14,6 +14,7 @@ interface PinnedResultsProps {
   onClearButtonClick: () => void;
   onItemRemoveButtonClick: (timestamp: number) => void;
   changeName: (timestamp: number, name: string) => void;
+  changeComment: (timestamp: number, comment: string) => void;
 }
 
 export function PinnedResults({
@@ -21,6 +22,7 @@ export function PinnedResults({
   onClearButtonClick,
   onItemRemoveButtonClick,
   changeName,
+  changeComment,
 }: PinnedResultsProps) {
   const uiItems: Array<PinnedUiItem> = results.map((result) => {
     const convertedValues = convertValues({ time: result.time, adena: result.adena, exp: result.exp });
@@ -71,7 +73,18 @@ export function PinnedResults({
         },
         { header: 'Опыт (24ч)', width: 100, cell: (item) => item.dailyExp },
         { header: 'Адена (24ч)', width: 100, cell: (item) => item.dailyAdena },
-        { header: 'Комментарий', cell: (item) => item.comment ?? defaultComment },
+        {
+          header: 'Комментарий',
+          cell: (item) => (
+            <EditableField
+              field="comment"
+              timestamp={item.timestamp}
+              value={item.comment}
+              defaultDisplayValue={defaultComment}
+              onChange={changeComment}
+            />
+          ),
+        },
         {
           header: 'Действия',
           width: 50,

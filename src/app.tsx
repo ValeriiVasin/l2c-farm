@@ -55,13 +55,18 @@ function Content() {
   };
 
   const changeName = (timestamp: number, name: string) => {
-    const nextResults = pinnedResults.map((result) => {
-      if (result.timestamp !== timestamp) {
-        return result;
-      }
+    const nextResults = pinnedResults.map((result) =>
+      result.timestamp === timestamp ? { ...result, character: name ? name : void 0 } : result,
+    );
 
-      return result.timestamp === timestamp ? { ...result, character: name ? name : void 0 } : result;
-    });
+    setPinnedResults(nextResults);
+    savePinnedResults(nextResults);
+  };
+
+  const changeComment = (timestamp: number, comment: string) => {
+    const nextResults = pinnedResults.map((result) =>
+      result.timestamp === timestamp ? { ...result, comment: comment ? comment : void 0 } : result,
+    );
 
     setPinnedResults(nextResults);
     savePinnedResults(nextResults);
@@ -172,6 +177,7 @@ function Content() {
       </Container>
       <PinnedResults
         changeName={changeName}
+        changeComment={changeComment}
         results={pinnedResults}
         onClearButtonClick={clearResults}
         onItemRemoveButtonClick={removeItem}
