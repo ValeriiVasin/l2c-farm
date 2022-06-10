@@ -156,11 +156,11 @@ function Content() {
                 sections: [
                   {
                     header: 'Опыт',
-                    content: (item) => <span data-testid={sectionTestId(item, 'exp')}>{item.exp}</span>,
+                    content: (item) => <span data-testid={`section-exp-${item.id}`}>{item.exp}</span>,
                   },
                   {
                     header: 'Адена',
-                    content: (item) => <span data-testid={sectionTestId(item, 'adena')}>{item.adena}</span>,
+                    content: (item) => <span data-testid={`section-adena-${item.id}`}>{item.adena}</span>,
                   },
                 ],
               }}
@@ -177,8 +177,4 @@ function Content() {
       />
     </SpaceBetween>
   );
-}
-
-function sectionTestId(item: CardItem, variant: 'adena' | 'exp') {
-  return `section-${variant}-${item.id}`;
 }
