@@ -1,6 +1,5 @@
 import Button from '@awsui/components-react/button';
 import Header from '@awsui/components-react/header';
-import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
 import Table from '@awsui/components-react/table';
 import { format } from 'date-fns';
@@ -9,6 +8,7 @@ import { defaultCharacterName } from '../../constants/default-character-name';
 import { defaultComment } from '../../constants/default-comment';
 import { convertValues } from '../../helpers/convert-values';
 import type { PinnedResult, PinnedUiItem } from '../../types';
+import { EditFieldInline } from '../edit-field-inline/edit-field-inline';
 
 interface PinnedResultsProps {
   results: Array<PinnedResult>;
@@ -56,21 +56,20 @@ export function PinnedResults({
       trackBy="timestamp"
       items={uiItems}
       columnDefinitions={[
-        { header: 'Дата', cell: (item) => format(item.timestamp, 'dd.MM.yyyy HH:mm') },
+        { header: 'Дата', width: 200, cell: (item) => format(item.timestamp, 'dd.MM.yyyy HH:mm') },
         {
           header: 'Персонаж',
+          width: 200,
           cell: (item) => <CharacterName timestamp={item.timestamp} character={item.character} onChange={changeName} />,
         },
-        { header: 'Опыт (24ч)', cell: (item) => item.dailyExp },
-        { header: 'Адена (24ч)', cell: (item) => item.dailyAdena },
+        { header: 'Опыт (24ч)', width: 100, cell: (item) => item.dailyExp },
+        { header: 'Адена (24ч)', width: 100, cell: (item) => item.dailyAdena },
         { header: 'Комментарий', cell: (item) => item.comment ?? defaultComment },
         {
           header: 'Действия',
+          width: 50,
           cell: (item) => (
             <SpaceBetween size="s" direction="horizontal">
-              <span title="Редактировать">
-                <Button variant="inline-icon" iconName="edit" />
-              </span>
               <span title="Удалить" onClick={() => onItemRemoveButtonClick(item.timestamp)}>
                 <Button data-testid={`remove-item-${item.timestamp}`} variant="inline-icon" iconName="close" />
               </span>
@@ -88,32 +87,19 @@ interface CharacterNameProps {
   onChange: (timestamp: number, name: string) => void;
 }
 function CharacterName({ timestamp, character, onChange }: CharacterNameProps) {
-  const [name, setName] = useState(character ?? '');
   const [isEdit, setIsEdit] = useState(false);
 
   if (isEdit) {
     return (
-      <SpaceBetween size="s" direction="horizontal">
-        <Input
-          autoFocus
-          data-testid={`edit-character-input-${timestamp}`}
-          value={name}
-          onChange={(event) => setName(event.detail.value)}
-          onKeyDown={(event) => {
-            if (event.detail.key === 'Enter') {
-              onChange(timestamp, name);
-              setIsEdit(false);
-              return;
-            }
-
-            if (event.detail.key === 'Escape') {
-              setName(character ?? '');
-              setIsEdit(false);
-              return;
-            }
-          }}
-        />
-      </SpaceBetween>
+      <EditFieldInline
+        initialValue={character}
+        testId={`edit-character-input-${timestamp}`}
+        onChange={(name) => {
+          onChange(timestamp, name);
+          setIsEdit(false);
+        }}
+        onCancel={() => setIsEdit(false)}
+      />
     );
   }
 

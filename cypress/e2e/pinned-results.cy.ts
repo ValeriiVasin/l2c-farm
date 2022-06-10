@@ -118,7 +118,7 @@ describe('Pinned results', () => {
       cy.get(selectors.characterName(timestamp)).should('have.text', 'не указан');
     });
 
-    it.only('adding pin is using previous character name', () => {
+    it('adding pin is using previous character name', () => {
       cy.get(selectors.editCharacterNameButton(timestamp)).click();
       cy.get(selectors.editCharacterNameInput(timestamp)).type('NSDQ{enter}');
 
@@ -128,5 +128,7 @@ describe('Pinned results', () => {
     });
   });
 
-  it('edit comment');
+  describe.skip('edit comment', () => {
+    // TBD
+  });
 });
