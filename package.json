@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "start:ci": "serve -s dist -l 3000",
+    "start": "vite",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",

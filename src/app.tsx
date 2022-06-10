@@ -104,7 +104,8 @@ function Content() {
   };
 
   const onPinButtonClick = () => {
-    pinResult({ adena, exp, time, timestamp: Date.now() });
+    const character = pinnedResults.length > 0 ? pinnedResults[0].character : void 0;
+    pinResult({ adena, exp, time, timestamp: Date.now(), character });
   };
 
   useEffect(() => {

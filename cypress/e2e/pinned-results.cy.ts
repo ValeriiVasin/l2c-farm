@@ -117,8 +117,16 @@ describe('Pinned results', () => {
       cy.get(selectors.editCharacterNameInput(timestamp)).type('{enter}');
       cy.get(selectors.characterName(timestamp)).should('have.text', 'не указан');
     });
+
+    it.only('adding pin is using previous character name', () => {
+      cy.get(selectors.editCharacterNameButton(timestamp)).click();
+      cy.get(selectors.editCharacterNameInput(timestamp)).type('NSDQ{enter}');
+
+      clock.tick(60 * 1000);
+      pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
+      cy.get(selectors.characterName(timestamp + 60 * 1000)).should('have.text', 'NSDQ');
+    });
   });
 
-  it('adding pin is using previous character name');
   it('edit comment');
 });
