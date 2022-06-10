@@ -3,12 +3,11 @@ import Header from '@awsui/components-react/header';
 import SpaceBetween from '@awsui/components-react/space-between';
 import Table from '@awsui/components-react/table';
 import { format } from 'date-fns';
-import { useState } from 'react';
 import { defaultCharacterName } from '../../constants/default-character-name';
 import { defaultComment } from '../../constants/default-comment';
 import { convertValues } from '../../helpers/convert-values';
 import type { PinnedResult, PinnedUiItem } from '../../types';
-import { EditFieldInline } from '../edit-field-inline/edit-field-inline';
+import { EditableField } from '../editable-field/editable-field';
 
 interface PinnedResultsProps {
   results: Array<PinnedResult>;
@@ -60,7 +59,15 @@ export function PinnedResults({
         {
           header: 'Персонаж',
           width: 200,
-          cell: (item) => <CharacterName timestamp={item.timestamp} character={item.character} onChange={changeName} />,
+          cell: (item) => (
+            <EditableField
+              field="character"
+              timestamp={item.timestamp}
+              value={item.character}
+              defaultDisplayValue={defaultCharacterName}
+              onChange={changeName}
+            />
+          ),
         },
         { header: 'Опыт (24ч)', width: 100, cell: (item) => item.dailyExp },
         { header: 'Адена (24ч)', width: 100, cell: (item) => item.dailyAdena },
@@ -78,40 +85,5 @@ export function PinnedResults({
         },
       ]}
     ></Table>
-  );
-}
-
-interface CharacterNameProps {
-  timestamp: number;
-  character?: string;
-  onChange: (timestamp: number, name: string) => void;
-}
-function CharacterName({ timestamp, character, onChange }: CharacterNameProps) {
-  const [isEdit, setIsEdit] = useState(false);
-
-  if (isEdit) {
-    return (
-      <EditFieldInline
-        initialValue={character}
-        testId={`edit-character-input-${timestamp}`}
-        onChange={(name) => {
-          onChange(timestamp, name);
-          setIsEdit(false);
-        }}
-        onCancel={() => setIsEdit(false)}
-      />
-    );
-  }
-
-  return (
-    <SpaceBetween size="xxxs" direction="horizontal">
-      <span data-testid={`character-name-${timestamp}`}>{character ?? defaultCharacterName}</span>
-      <Button
-        onClick={() => setIsEdit(true)}
-        data-testid={`edit-character-button-${timestamp}`}
-        iconName="edit"
-        variant="inline-icon"
-      ></Button>
-    </SpaceBetween>
   );
 }

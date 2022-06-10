@@ -11,7 +11,7 @@ export const enum ResultTableField {
   Actions = 6,
 }
 
-export const wrappers = {
+const wrappers = {
   pinnedResultsTable: () => createWrapper().findTable(testId('pinned-results-table')),
   pinnedResultsRows: () => wrappers.pinnedResultsTable().findRows(),
   resultTableCell: (rowIndex: number, columnIndex: ResultTableField) =>
@@ -48,5 +48,5 @@ export const selectors = {
       .findInput(testId(`edit-character-input-${timestamp}`))
       .findNativeInput()
       .toSelector(),
-  characterName: (timestamp: number) => testId(`character-name-${timestamp}`),
+  characterName: (timestamp: number) => testId(`character-${timestamp}`),
 };

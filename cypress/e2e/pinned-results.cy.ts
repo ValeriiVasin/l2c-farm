@@ -131,4 +131,6 @@ describe('Pinned results', () => {
   describe.skip('edit comment', () => {
     // TBD
   });
+
+  it('date field is having a link');
 });
