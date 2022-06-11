@@ -8,6 +8,7 @@ export interface PinnedResult {
 }
 
 export interface PinnedUiItem {
+  href: string;
   timestamp: number;
   character?: string;
   dailyExp: string;

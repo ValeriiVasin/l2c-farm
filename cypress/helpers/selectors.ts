@@ -58,4 +58,8 @@ export const selectors = {
       .findInput(testId(`edit-comment-input-${timestamp}`))
       .findNativeInput()
       .toSelector(),
+  resultLink: (timestamp: number) =>
+    createWrapper()
+      .findLink(testId(`results-link-${timestamp}`))
+      .toSelector(),
 };

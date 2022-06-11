@@ -172,5 +172,12 @@ describe('Pinned results', () => {
     });
   });
 
-  it('date field is having a link');
+  it('date field is having a proper link', () => {
+    pinItem({ time: '1h', exp: '1kkk', adena: '1kk' });
+    cy.get(selectors.resultLink(timestamp))
+      .invoke('attr', 'href')
+      .should('include', 'time=1h')
+      .and('include', 'exp=1kkk')
+      .and('include', 'adena=1kk');
+  });
 });
