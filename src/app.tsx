@@ -32,7 +32,7 @@ const searchParamsConfig = {
 
 function Content() {
   const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
-  const { pinnedResults, pinResult } = usePinnedResults();
+  const { pinResult } = usePinnedResults();
 
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
@@ -70,10 +70,7 @@ function Content() {
     expInputRef.current?.focus();
   };
 
-  const onPinButtonClick = () => {
-    const character = pinnedResults.length > 0 ? pinnedResults[0].character : void 0;
-    pinResult({ adena, exp, time, timestamp: Date.now(), character });
-  };
+  const onPinButtonClick = () => pinResult({ adena, exp, time, timestamp: Date.now() });
 
   useEffect(() => {
     setSearchParams({ exp, time, adena });

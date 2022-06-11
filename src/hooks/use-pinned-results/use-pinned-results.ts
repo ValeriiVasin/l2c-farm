@@ -6,8 +6,10 @@ export function usePinnedResults() {
   const [pinnedResults, setPinnedResults] = useRecoilState(pinnedResultsAtom);
 
   const pinResult = (item: PinnedResult) => {
-    setPinnedResults([item, ...pinnedResults]);
+    const character = pinnedResults.length > 0 ? pinnedResults[0].character : void 0;
+    setPinnedResults([{ ...item, character }, ...pinnedResults]);
   };
+
   const clearPinnedResults = () => setPinnedResults([]);
 
   const removePinnedResult = (timestamp: number) => {
