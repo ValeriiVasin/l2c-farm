@@ -7,15 +7,9 @@ export interface PinnedResult {
   comment?: string;
 }
 
-export interface PinnedUiItem {
-  adena: string;
-  character?: string;
-  comment?: string;
+export interface PinnedUiItem extends PinnedResult {
   dailyAdena: string;
   dailyExp: string;
-  exp: string;
-  time: string;
-  timestamp: number;
 }
 
 export type ValueVariant = 'daily' | 'hourly';
