@@ -26,7 +26,7 @@ export const pinnedResultsAtom = atom<PinnedResult[]>({
   effects: [localStorageEffect<PinnedResult[]>(pinnedResultsLocalstorageKey)],
 });
 
-export const uiPinnedResultsAtom = selector<PinnedUiItem[]>({
+export const uiPinnedResultsSelector = selector<PinnedUiItem[]>({
   key: 'uiPinnedResults',
   get: ({ get }) =>
     get(pinnedResultsAtom).map(({ time, adena, exp, timestamp, comment, character }) => {

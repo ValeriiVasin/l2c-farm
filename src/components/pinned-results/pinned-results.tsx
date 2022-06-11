@@ -10,14 +10,14 @@ import { defaultComment } from '../../constants/default-comment';
 import { searchParamsConfig } from '../../constants/search-params-config';
 import { useAppSearchParams } from '../../hooks/use-app-search-params/use-app-search-params';
 import { usePinnedResults } from '../../hooks/use-pinned-results/use-pinned-results';
-import { uiPinnedResultsAtom } from '../../state';
+import { uiPinnedResultsSelector } from '../../state';
 import { EditableField } from '../editable-field/editable-field';
 
 export function PinnedResults() {
   const { changePinnedCharacterName, changePinnedComment, clearPinnedResults, removePinnedResult } = usePinnedResults();
   const { url } = useAppSearchParams(searchParamsConfig);
 
-  const uiItems = useRecoilValue(uiPinnedResultsAtom);
+  const uiItems = useRecoilValue(uiPinnedResultsSelector);
 
   if (uiItems.length === 0) {
     return null;
