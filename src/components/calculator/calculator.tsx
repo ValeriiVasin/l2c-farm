@@ -8,10 +8,11 @@ import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { searchParamsConfig } from '../../constants/search-params-config';
 import { convertValues } from '../../helpers/convert-values';
 import { useAppSearchParams } from '../../hooks/use-app-search-params/use-app-search-params';
-import { usePinnedResults } from '../../hooks/use-pinned-results/use-pinned-results';
+import { pinnedResultsHandlersSelector } from '../../state';
 
 interface CardItem {
   id: 'hourly' | 'daily';
@@ -22,7 +23,7 @@ interface CardItem {
 
 export function Calculator() {
   const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
-  const { pinResult } = usePinnedResults();
+  const { pinResult } = useRecoilValue(pinnedResultsHandlersSelector);
 
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);

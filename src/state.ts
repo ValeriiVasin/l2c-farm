@@ -26,6 +26,54 @@ export const pinnedResultsAtom = atom<PinnedResult[]>({
   effects: [localStorageEffect<PinnedResult[]>(pinnedResultsLocalstorageKey)],
 });
 
+export const pinnedResultsHandlersSelector = selector({
+  key: 'pinnedResultsHandlersSelector',
+  get: ({ get, getCallback }) => {
+    const pinnedResults = get(pinnedResultsAtom);
+
+    const clearPinnedResults = getCallback(({ set }) => () => {
+      set(pinnedResultsAtom, []);
+    });
+
+    const removePinnedItem = getCallback(({ set }) => (timestamp: number) => {
+      set(
+        pinnedResultsAtom,
+        pinnedResults.filter((result) => result.timestamp !== timestamp),
+      );
+    });
+
+    const pinResult = getCallback(({ set }) => (item: PinnedResult) => {
+      const character = pinnedResults.length > 0 ? pinnedResults[0].character : void 0;
+      set(pinnedResultsAtom, [{ ...item, character }, ...pinnedResults]);
+    });
+
+    const changePinnedCharacterName = getCallback(({ set }) => (timestamp: number, name: string) => {
+      set(
+        pinnedResultsAtom,
+        pinnedResults.map((result) =>
+          result.timestamp === timestamp ? { ...result, character: name ? name : void 0 } : result,
+        ),
+      );
+    });
+
+    const changePinnedComment = getCallback(({ set }) => (timestamp: number, comment: string) => {
+      set(
+        pinnedResultsAtom,
+        pinnedResults.map((result) =>
+          result.timestamp === timestamp ? { ...result, comment: comment ? comment : void 0 } : result,
+        ),
+      );
+    });
+
+    return {
+      clearPinnedResults,
+      removePinnedItem,
+      pinResult,
+      changePinnedCharacterName,
+      changePinnedComment,
+    };
+  },
+});
 export const uiPinnedResultsSelector = selector<PinnedUiItem[]>({
   key: 'uiPinnedResults',
   get: ({ get }) =>

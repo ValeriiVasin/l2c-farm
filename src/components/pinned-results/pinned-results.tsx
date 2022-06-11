@@ -9,12 +9,13 @@ import { defaultCharacterName } from '../../constants/default-character-name';
 import { defaultComment } from '../../constants/default-comment';
 import { searchParamsConfig } from '../../constants/search-params-config';
 import { useAppSearchParams } from '../../hooks/use-app-search-params/use-app-search-params';
-import { usePinnedResults } from '../../hooks/use-pinned-results/use-pinned-results';
-import { uiPinnedResultsSelector } from '../../state';
+import { pinnedResultsHandlersSelector, uiPinnedResultsSelector } from '../../state';
 import { EditableField } from '../editable-field/editable-field';
 
 export function PinnedResults() {
-  const { changePinnedCharacterName, changePinnedComment, clearPinnedResults, removePinnedResult } = usePinnedResults();
+  const { clearPinnedResults, removePinnedItem, changePinnedCharacterName, changePinnedComment } =
+    useRecoilValue(pinnedResultsHandlersSelector);
+
   const { url } = useAppSearchParams(searchParamsConfig);
 
   const uiItems = useRecoilValue(uiPinnedResultsSelector);
@@ -87,7 +88,7 @@ export function PinnedResults() {
                   data-testid={`remove-item-${timestamp}`}
                   variant="inline-icon"
                   iconName="close"
-                  onClick={() => removePinnedResult(timestamp)}
+                  onClick={() => removePinnedItem(timestamp)}
                 />
               </span>
             </SpaceBetween>
