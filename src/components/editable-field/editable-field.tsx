@@ -1,3 +1,4 @@
+import Box from '@awsui/components-react/box';
 import Button from '@awsui/components-react/button';
 import SpaceBetween from '@awsui/components-react/space-between';
 import { useState } from 'react';
@@ -30,7 +31,7 @@ export function EditableField({ field, timestamp, value, defaultDisplayValue, on
 
   return (
     <SpaceBetween size="xxxs" direction="horizontal">
-      <span data-testid={`${field}-${timestamp}`}>{value ?? defaultDisplayValue}</span>
+      <Box data-testid={`${field}-${timestamp}`}>{value ?? defaultDisplayValue}</Box>
       <Button
         onClick={() => setIsEdit(true)}
         data-testid={`edit-${field}-button-${timestamp}`}

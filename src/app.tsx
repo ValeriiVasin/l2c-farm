@@ -1,4 +1,5 @@
 import AppLayout from '@awsui/components-react/app-layout';
+import Box from '@awsui/components-react/box';
 import Button from '@awsui/components-react/button';
 import Cards from '@awsui/components-react/cards';
 import ColumnLayout from '@awsui/components-react/column-layout';
@@ -121,11 +122,11 @@ function Content() {
                 sections: [
                   {
                     header: 'Опыт',
-                    content: (item) => <span data-testid={`section-exp-${item.id}`}>{item.exp}</span>,
+                    content: (item) => <Box data-testid={`section-exp-${item.id}`}>{item.exp}</Box>,
                   },
                   {
                     header: 'Адена',
-                    content: (item) => <span data-testid={`section-adena-${item.id}`}>{item.adena}</span>,
+                    content: (item) => <Box data-testid={`section-adena-${item.id}`}>{item.adena}</Box>,
                   },
                 ],
               }}

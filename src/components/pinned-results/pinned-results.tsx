@@ -82,7 +82,7 @@ export function PinnedResults() {
           width: 50,
           cell: ({ timestamp }) => (
             <SpaceBetween size="s" direction="horizontal">
-              <span title="Удалить" onClick={() => timestamp}>
+              <span title="Удалить">
                 <Button
                   data-testid={`remove-item-${timestamp}`}
                   variant="inline-icon"
