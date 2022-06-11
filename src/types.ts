@@ -8,12 +8,14 @@ export interface PinnedResult {
 }
 
 export interface PinnedUiItem {
-  href: string;
-  timestamp: number;
+  adena: string;
   character?: string;
-  dailyExp: string;
-  dailyAdena: string;
   comment?: string;
+  dailyAdena: string;
+  dailyExp: string;
+  exp: string;
+  time: string;
+  timestamp: number;
 }
 
 export type ValueVariant = 'daily' | 'hourly';

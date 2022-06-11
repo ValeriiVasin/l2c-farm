@@ -4,41 +4,20 @@ import Link from '@awsui/components-react/link';
 import SpaceBetween from '@awsui/components-react/space-between';
 import Table from '@awsui/components-react/table';
 import { format } from 'date-fns';
+import { useRecoilValue } from 'recoil';
 import { defaultCharacterName } from '../../constants/default-character-name';
 import { defaultComment } from '../../constants/default-comment';
 import { searchParamsConfig } from '../../constants/search-params-config';
-import { convertValues } from '../../helpers/convert-values';
 import { useAppSearchParams } from '../../hooks/use-app-search-params/use-app-search-params';
-import type { PinnedResult, PinnedUiItem } from '../../types';
+import { usePinnedResults } from '../../hooks/use-pinned-results/use-pinned-results';
+import { uiPinnedResultsAtom } from '../../state';
 import { EditableField } from '../editable-field/editable-field';
 
-interface PinnedResultsProps {
-  results: Array<PinnedResult>;
-  onClearButtonClick: () => void;
-  onItemRemoveButtonClick: (timestamp: number) => void;
-  changeName: (timestamp: number, name: string) => void;
-  changeComment: (timestamp: number, comment: string) => void;
-}
-
-export function PinnedResults({
-  results,
-  onClearButtonClick,
-  onItemRemoveButtonClick,
-  changeName,
-  changeComment,
-}: PinnedResultsProps) {
+export function PinnedResults() {
+  const { changePinnedCharacterName, changePinnedComment, clearPinnedResults, removePinnedResult } = usePinnedResults();
   const { url } = useAppSearchParams(searchParamsConfig);
-  const uiItems: Array<PinnedUiItem> = results.map((result) => {
-    const convertedValues = convertValues({ time: result.time, adena: result.adena, exp: result.exp });
-    return {
-      href: url('/', { time: result.time, adena: result.adena, exp: result.exp }),
-      timestamp: result.timestamp,
-      character: result.character,
-      comment: result.comment,
-      dailyAdena: convertedValues.dailyAdena,
-      dailyExp: convertedValues.dailyExp,
-    };
-  });
+
+  const uiItems = useRecoilValue(uiPinnedResultsAtom);
 
   if (uiItems.length === 0) {
     return null;
@@ -51,7 +30,7 @@ export function PinnedResults({
         <Header
           variant="h3"
           actions={
-            <Button data-testid="clear-pinned-results-button" variant="normal" onClick={onClearButtonClick}>
+            <Button data-testid="clear-pinned-results-button" variant="normal" onClick={clearPinnedResults}>
               Очистить
             </Button>
           }
@@ -65,46 +44,51 @@ export function PinnedResults({
         {
           header: 'Дата',
           width: 200,
-          cell: (item) => (
-            <Link data-testid={`results-link-${item.timestamp}`} href={item.href}>
-              {format(item.timestamp, 'dd.MM.yyyy HH:mm')}
+          cell: ({ time, adena, exp, timestamp }) => (
+            <Link data-testid={`results-link-${timestamp}`} href={url('/', { time, adena, exp })}>
+              {format(timestamp, 'dd.MM.yyyy HH:mm')}
             </Link>
           ),
         },
         {
           header: 'Персонаж',
           width: 200,
-          cell: (item) => (
+          cell: ({ timestamp, character }) => (
             <EditableField
               field="character"
-              timestamp={item.timestamp}
-              value={item.character}
+              timestamp={timestamp}
+              value={character}
               defaultDisplayValue={defaultCharacterName}
-              onChange={changeName}
+              onChange={changePinnedCharacterName}
             />
           ),
         },
-        { header: 'Опыт (24ч)', width: 100, cell: (item) => item.dailyExp },
-        { header: 'Адена (24ч)', width: 100, cell: (item) => item.dailyAdena },
+        { header: 'Опыт (24ч)', width: 100, cell: ({ dailyExp }) => dailyExp },
+        { header: 'Адена (24ч)', width: 100, cell: ({ dailyAdena }) => dailyAdena },
         {
           header: 'Комментарий',
-          cell: (item) => (
+          cell: ({ timestamp, comment }) => (
             <EditableField
               field="comment"
-              timestamp={item.timestamp}
-              value={item.comment}
+              timestamp={timestamp}
+              value={comment}
               defaultDisplayValue={defaultComment}
-              onChange={changeComment}
+              onChange={changePinnedComment}
             />
           ),
         },
         {
           header: 'Действия',
           width: 50,
-          cell: (item) => (
+          cell: ({ timestamp }) => (
             <SpaceBetween size="s" direction="horizontal">
-              <span title="Удалить" onClick={() => onItemRemoveButtonClick(item.timestamp)}>
-                <Button data-testid={`remove-item-${item.timestamp}`} variant="inline-icon" iconName="close" />
+              <span title="Удалить" onClick={() => timestamp}>
+                <Button
+                  data-testid={`remove-item-${timestamp}`}
+                  variant="inline-icon"
+                  iconName="close"
+                  onClick={() => removePinnedResult(timestamp)}
+                />
               </span>
             </SpaceBetween>
           ),

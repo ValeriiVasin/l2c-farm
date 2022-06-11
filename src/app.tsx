@@ -7,13 +7,11 @@ import FormField from '@awsui/components-react/form-field';
 import Header from '@awsui/components-react/header';
 import Input from '@awsui/components-react/input';
 import SpaceBetween from '@awsui/components-react/space-between';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PinnedResults } from './components/pinned-results/pinned-results';
 import { convertValues } from './helpers/convert-values';
-import { getPinnedResults } from './helpers/get-pinned-results';
-import { savePinnedResults } from './helpers/save-pinned-results';
 import { useAppSearchParams } from './hooks/use-app-search-params/use-app-search-params';
-import type { PinnedResult } from './types';
+import { usePinnedResults } from './hooks/use-pinned-results/use-pinned-results';
 
 export function App() {
   return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
@@ -34,43 +32,7 @@ const searchParamsConfig = {
 
 function Content() {
   const { searchParams, setSearchParams } = useAppSearchParams(searchParamsConfig);
-  const [pinnedResults, setPinnedResults] = useState(getPinnedResults());
-  const pinResult = useCallback(
-    (item: PinnedResult) => {
-      const nextPinnedItems = [item, ...pinnedResults];
-      setPinnedResults(nextPinnedItems);
-      savePinnedResults(nextPinnedItems);
-    },
-    [pinnedResults],
-  );
-  const clearResults = () => {
-    setPinnedResults([]);
-    savePinnedResults([]);
-  };
-
-  const removeItem = (timestamp: number) => {
-    const nextResults = pinnedResults.filter((result) => result.timestamp !== timestamp);
-    setPinnedResults(nextResults);
-    savePinnedResults(nextResults);
-  };
-
-  const changeName = (timestamp: number, name: string) => {
-    const nextResults = pinnedResults.map((result) =>
-      result.timestamp === timestamp ? { ...result, character: name ? name : void 0 } : result,
-    );
-
-    setPinnedResults(nextResults);
-    savePinnedResults(nextResults);
-  };
-
-  const changeComment = (timestamp: number, comment: string) => {
-    const nextResults = pinnedResults.map((result) =>
-      result.timestamp === timestamp ? { ...result, comment: comment ? comment : void 0 } : result,
-    );
-
-    setPinnedResults(nextResults);
-    savePinnedResults(nextResults);
-  };
+  const { pinnedResults, pinResult } = usePinnedResults();
 
   const [exp, setExp] = useState(searchParams.exp);
   const [adena, setAdena] = useState(searchParams.adena);
@@ -175,13 +137,7 @@ function Content() {
           )}
         </ColumnLayout>
       </Container>
-      <PinnedResults
-        changeName={changeName}
-        changeComment={changeComment}
-        results={pinnedResults}
-        onClearButtonClick={clearResults}
-        onItemRemoveButtonClick={removeItem}
-      />
+      <PinnedResults />
     </SpaceBetween>
   );
 }
