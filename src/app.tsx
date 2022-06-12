@@ -1,19 +1,15 @@
 import AppLayout from '@awsui/components-react/app-layout';
-import SpaceBetween from '@awsui/components-react/space-between';
-import { Calculator } from './components/calculator/calculator';
-import { PinnedResults } from './components/pinned-results/pinned-results';
+import { Route, Routes } from 'react-router-dom';
+import { Farm } from './components/farm/farm';
 
 export function App() {
+  return <AppLayout content={<Content />} navigationHide toolsHide></AppLayout>;
+}
+
+function Content() {
   return (
-    <AppLayout
-      content={
-        <SpaceBetween size="l">
-          <Calculator />
-          <PinnedResults />
-        </SpaceBetween>
-      }
-      navigationHide
-      toolsHide
-    ></AppLayout>
+    <Routes>
+      <Route index element={<Farm />} />
+    </Routes>
   );
 }
