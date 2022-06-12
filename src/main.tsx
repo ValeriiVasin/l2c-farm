@@ -7,10 +7,10 @@ import { App } from './app';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <RecoilRoot>
+    <RecoilRoot>
+      <BrowserRouter>
         <App />
-      </RecoilRoot>
-    </BrowserRouter>
+      </BrowserRouter>
+    </RecoilRoot>
   </React.StrictMode>,
 );
