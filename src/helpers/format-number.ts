@@ -1,7 +1,7 @@
-export function formatNumber(value: number): string {
-  const base = 1_000;
-  let power = 0;
+export function formatNumber(initialValue: number | bigint): string {
+  let { power, value } = bigIntAdjustments(initialValue);
 
+  const base = 1_000;
   while (value >= base) {
     power += 1;
     value /= base;
@@ -25,4 +25,19 @@ function format(value: number, digits: number): string {
   // replace trailing zeros from toFixed(): 1.70 => 1.7
   // replace extra dot case after zeros removal: 1. => 1
   return value.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function bigIntAdjustments(value: number | bigint): { value: number; power: number } {
+  if (typeof value === 'number') {
+    return { value, power: 0 };
+  }
+
+  const base = BigInt(1_000);
+  let power = 0;
+  while (value > Number.MAX_SAFE_INTEGER) {
+    value /= base;
+    power += 1;
+  }
+
+  return { value: Number(value), power };
 }

@@ -1,5 +1,6 @@
 import { describe, test } from '@jest/globals';
 import { formatNumber } from './format-number';
+import { toBigInt } from './to-bigint';
 
 describe('format exp', () => {
   test('full value before 1k', () => {
@@ -29,5 +30,16 @@ describe('format exp', () => {
 
   test('number with lots of digits in frac part', () => {
     expect(formatNumber(1_000_000.0000000001)).toBe('1kk');
+  });
+
+  describe('bigint', () => {
+    test('supports small numbers type of bigint', () => {
+      expect(formatNumber(BigInt(1_000_000))).toBe('1kk');
+    });
+
+    test('converts bigint values properly', () => {
+      expect(formatNumber(toBigInt('8_773_017_235_217_830_000'))).toBe('8.77kkkkkk');
+      expect(formatNumber(toBigInt('8_775_017_235_217_830_000'))).toBe('8.78kkkkkk');
+    });
   });
 });
