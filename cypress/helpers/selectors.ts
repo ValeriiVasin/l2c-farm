@@ -19,6 +19,7 @@ const wrappers = {
 };
 
 export const selectors = {
+  root: '#root',
   results: testId('results'),
   clearButton: testId('clear-button'),
   inputs: {
@@ -62,4 +63,13 @@ export const selectors = {
     createWrapper()
       .findLink(testId(`results-link-${timestamp}`))
       .toSelector(),
+
+  // exp
+  expingContainer: testId('exping'),
+  levelFromInput: createWrapper().findInput(testId('level-from-input')).findNativeInput().toSelector(),
+  levelToInput: createWrapper().findInput(testId('level-to-input')).findNativeInput().toSelector(),
+  expSpeedInput: createWrapper().findInput(testId('exp-speed-input')).findNativeInput().toSelector(),
+  expTimeInput: createWrapper().findInput(testId('exp-time-input')).findNativeInput().toSelector(),
+  expLevelResult: testId('exp-level-result'),
+  expSpeedResult: testId('exp-speed-result'),
 };
