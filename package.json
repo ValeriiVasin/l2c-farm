@@ -16,7 +16,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@awsui/components-react": "^3.0.572",
+    "@awsui/components-react": "^3.0.575",
     "@awsui/global-styles": "^1.0.19",
     "date-fns": "^2.29.2",
     "lodash": "^4.17.21",
