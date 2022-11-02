@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash": "^4.14.187",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
