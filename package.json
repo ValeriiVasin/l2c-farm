@@ -24,7 +24,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
     "recoil": "^0.7.6",
-    "zod": "^3.19.1"
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",
