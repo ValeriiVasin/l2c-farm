@@ -18,7 +18,7 @@
   "dependencies": {
     "@awsui/components-react": "^3.0.1049",
     "@awsui/global-styles": "^1.0.20",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.2.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
